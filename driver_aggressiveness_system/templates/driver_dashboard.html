@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Driver Dashboard | Smart Drive Be Safe</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+
+<body>
+    <div class="dashboard-container">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <div class="brand">
+                <img src="{{ url_for('static', filename='images/driver.svg') }}" width="24" style="filter: invert(1);">
+                Smart Drive Be Safe
+            </div>
+            <ul class="nav-links">
+                <li class="nav-item">
+                    <a href="{{ url_for('driver_dashboard') }}" class="nav-link active">My Dashboard</a>
+                </li>
+            </ul>
+            <div style="margin-top: auto;">
+                <a href="{{ url_for('logout') }}" class="nav-link" style="color: var(--accent-red);">Logout</a>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+                <h2 style="margin: 0;">Welcome, {{ current_user.name }}</h2>
+                <div style="color: var(--text-secondary);">Driver ID: {{ current_user.driver_id }}</div>
+            </div>
+
+            <!-- Warnings Section -->
+            {% if warnings %}
+            <div style="margin-bottom: 2rem;">
+                <h3 style="color: var(--accent-red); margin-top: 0;">⚠️ Recent Warnings</h3>
+                {% for warning in warnings %}
+                <div class="warning-alert">
+                    <img src="{{ url_for('static', filename='images/warning.svg') }}" width="20">
+                    <div>
+                        <div style="font-weight: bold;">{{ warning.timestamp.strftime('%Y-%m-%d %H:%M') }}</div>
+                        <div>{{ warning.message }}</div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            {% endif %}
+
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-title">Average Risk Score</div>
+                    <div
+                        class="stat-value {% if avg_risk < 30 %}text-success{% elif avg_risk < 70 %}text-warning{% else %}text-danger{% endif %}">
+                        {{ "%.0f"|format(avg_risk) }}
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-title">Trips Logged</div>
+                    <div class="stat-value">{{ data|length }}</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-title">Total Warnings</div>
+                    <div class="stat-value text-warning">{{ warnings|length }}</div>
+                </div>
+            </div>
+
+            <h3 style="margin-top: 2rem;">My Driving History</h3>
+            <div class="table-container">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Time</th>
+                            <th>Speed</th>
+                            <th>Accel</th>
+                            <th>Braking</th>
+                            <th>Speeding %</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for row in data %}
+                        <tr>
+                            <td>{{ row.timestamp.strftime('%Y-%m-%d %H:%M') }}</td>
+                            <td>{{ "%.1f"|format(row.speed) }}</td>
+                            <td>{{ "%.1f"|format(row.acceleration) }}</td>
+                            <td>{{ "%.1f"|format(row.braking) }}</td>
+                            <td>{{ "%.1f"|format(row.speeding_pct) }}%</td>
+                            <td>
+                                {% if row.prediction == 'SAFE' %}
+                                <span class="text-success">SAFE</span>
+                                {% elif row.prediction == 'MODERATE' %}
+                                <span class="text-warning">MODERATE</span>
+                                {% else %}
+                                <span class="text-danger">AGGRESSIVE</span>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

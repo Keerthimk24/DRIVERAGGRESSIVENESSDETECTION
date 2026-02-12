@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart Drive Be Safe | AI Driver Safety</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+
+<body>
+    <div class="landing-hero">
+        <h1 class="hero-title">Smart Drive Be Safe</h1>
+
+
+        <div class="role-cards">
+            <a href="{{ url_for('admin_login') }}" class="role-card">
+                <img src="{{ url_for('static', filename='images/admin.svg') }}" alt="Admin" class="role-icon">
+                <h3>Admin Portal</h3>
+                <p style="color: var(--text-secondary);">Manage fleet, view analytics, and issue warnings.</p>
+            </a>
+
+            <a href="{{ url_for('driver_login') }}" class="role-card">
+                <img src="{{ url_for('static', filename='images/driver.svg') }}" alt="Driver" class="role-icon">
+                <h3>Driver Portal</h3>
+                <p style="color: var(--text-secondary);">View your driving history and safety scores.</p>
+            </a>
+        </div>
+    </div>
+</body>
+
+</html>
